@@ -1,3 +1,3 @@
 <?php
 
-define('BASE_URL', '/peminjaman_alat');
+define('BASE_URL', '/peminjaman_native');
