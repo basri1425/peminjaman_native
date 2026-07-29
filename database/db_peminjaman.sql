@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 28 Jul 2026 pada 14.47
+-- Waktu pembuatan: 29 Jul 2026 pada 07.01
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -44,7 +44,8 @@ CREATE TABLE `alat` (
 --
 
 INSERT INTO `alat` (`id_alat`, `id_kategori`, `nama_alat`, `stok`, `kondisi`, `lokasi`, `foto`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Laptop acer', 9, 'Baik', 'lab rpl 1', 'alat_6a6200aa851f6.jpeg', '2026-07-23 11:53:14', '2026-07-23 12:53:56');
+(1, 2, 'laptop acel', 7, 'Baik', 'lab 1', 'alat_6a619eaa11d5c.jpeg', '2026-07-23 04:55:06', '2026-07-29 04:36:33'),
+(2, 2, 'laptop hp', 13, 'Baik', 'lab 1', 'alat_6a63535133da6.png', '2026-07-24 11:58:09', '2026-07-29 04:33:20');
 
 -- --------------------------------------------------------
 
@@ -64,7 +65,33 @@ CREATE TABLE `detail_peminjaman` (
 --
 
 INSERT INTO `detail_peminjaman` (`id_detail`, `id_peminjaman`, `id_alat`, `jumlah`) VALUES
-(1, 1, 1, 1);
+(5, 3, 1, 3),
+(6, 3, 2, 2),
+(10, 4, 1, 2),
+(11, 5, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `detail_pengembalian`
+--
+
+CREATE TABLE `detail_pengembalian` (
+  `id_detail_pengembalian` int(11) NOT NULL,
+  `id_pengembalian` int(11) NOT NULL,
+  `id_alat` int(11) NOT NULL,
+  `jumlah` int(11) NOT NULL,
+  `kondisi` enum('Baik','Rusak Ringan','Rusak Berat','Hilang') NOT NULL,
+  `keterangan` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `detail_pengembalian`
+--
+
+INSERT INTO `detail_pengembalian` (`id_detail_pengembalian`, `id_pengembalian`, `id_alat`, `jumlah`, `kondisi`, `keterangan`) VALUES
+(2, 2, 2, 1, 'Baik', ''),
+(3, 3, 1, 2, 'Baik', '');
 
 -- --------------------------------------------------------
 
@@ -82,7 +109,7 @@ CREATE TABLE `kategori` (
 --
 
 INSERT INTO `kategori` (`id_kategori`, `nama_kategori`) VALUES
-(1, 'Laptop');
+(2, 'Laptop');
 
 -- --------------------------------------------------------
 
@@ -119,7 +146,9 @@ CREATE TABLE `peminjaman` (
 --
 
 INSERT INTO `peminjaman` (`id_peminjaman`, `id_user`, `tanggal_pinjam`, `tanggal_kembali`, `status`, `created_at`, `updated_at`) VALUES
-(1, 3, '2026-07-23', '2026-07-24', 'Menunggu', '2026-07-23 12:53:56', '2026-07-23 12:53:56');
+(3, 3, '2026-07-24', '2026-07-26', 'Selesai', '2026-07-24 11:58:43', '2026-07-29 01:22:53'),
+(4, 3, '2026-07-29', '2026-07-31', 'Selesai', '2026-07-29 01:03:00', '2026-07-29 04:36:33'),
+(5, 3, '2026-07-29', '2026-07-31', 'Selesai', '2026-07-29 03:09:28', '2026-07-29 03:09:47');
 
 -- --------------------------------------------------------
 
@@ -133,8 +162,17 @@ CREATE TABLE `pengembalian` (
   `tanggal_pengembalian` date NOT NULL,
   `kondisi_kembali` enum('Baik','Rusak Ringan','Rusak Berat') DEFAULT 'Baik',
   `keterangan` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `pengembalian`
+--
+
+INSERT INTO `pengembalian` (`id_pengembalian`, `id_peminjaman`, `tanggal_pengembalian`, `kondisi_kembali`, `keterangan`, `created_at`, `updated_at`) VALUES
+(2, 5, '2026-07-29', 'Baik', '', '2026-07-29 03:09:47', '2026-07-29 04:33:20'),
+(3, 4, '2026-07-29', 'Baik', '', '2026-07-29 04:36:33', '2026-07-29 04:36:33');
 
 -- --------------------------------------------------------
 
@@ -158,9 +196,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `nama_lengkap`, `username`, `password`, `level`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Administrator', 'admin', '$2y$10$ArNliygjI9oY51sO42HjdubLBoiEXxtX6eG99x9sqlQmKnYkTgwVC', 'Administrator', 'Aktif', '2026-07-23 05:53:16', '2026-07-23 05:54:12'),
-(2, 'Petugas Laboratorium', 'petugas', '$2y$10$hSiC3o6eQW/Kl1T.zZvEO.6KM67VKDorjnFSaKVOL/7/X/Jau3V6K', 'Petugas', 'Aktif', '2026-07-23 05:53:16', '2026-07-23 05:54:27'),
-(3, 'Andi Pratama', 'peminjam', '$2y$10$tDwFIn1MucR6w9fo420aeeX/.QU/REqmXbedBvlG/m0wcuYK59rbS', 'Peminjam', 'Aktif', '2026-07-23 05:53:16', '2026-07-23 05:54:39');
+(1, 'Administrator', 'admin', '$2y$10$IBtCPsttV081uDPtGT4ICOQrCGoPYndGsfVFxq8W6/Ksw2JwB9Dby', 'Administrator', 'Aktif', '2026-07-23 00:49:14', '2026-07-23 02:37:10'),
+(2, 'Petugas Laboratorium', 'petugas', '$2y$10$X42gSX4OLXyNAWCCFZkc/.boT0yMB3wIdFrxDrdXME.pe2m6cDwf2', 'Petugas', 'Aktif', '2026-07-23 00:49:14', '2026-07-23 00:51:10'),
+(3, 'Andi Pratama', 'peminjam', '$2y$10$EtRLRGB/Ic80y0L.pwI4IeUcGPiWkSorBseqMwq6DHc.HEMfbko9i', 'Peminjam', 'Aktif', '2026-07-23 00:49:14', '2026-07-23 01:37:38');
 
 --
 -- Indexes for dumped tables
@@ -180,6 +218,14 @@ ALTER TABLE `detail_peminjaman`
   ADD PRIMARY KEY (`id_detail`),
   ADD KEY `fk_detail_peminjaman` (`id_peminjaman`),
   ADD KEY `fk_detail_alat` (`id_alat`);
+
+--
+-- Indeks untuk tabel `detail_pengembalian`
+--
+ALTER TABLE `detail_pengembalian`
+  ADD PRIMARY KEY (`id_detail_pengembalian`),
+  ADD KEY `fk_detail_pengembalian` (`id_pengembalian`),
+  ADD KEY `fk_detail_pengembalian_alat` (`id_alat`);
 
 --
 -- Indeks untuk tabel `kategori`
@@ -224,19 +270,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `alat`
 --
 ALTER TABLE `alat`
-  MODIFY `id_alat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_alat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `detail_peminjaman`
 --
 ALTER TABLE `detail_peminjaman`
-  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT untuk tabel `detail_pengembalian`
+--
+ALTER TABLE `detail_pengembalian`
+  MODIFY `id_detail_pengembalian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `kategori`
 --
 ALTER TABLE `kategori`
-  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `log_aktivitas`
@@ -248,19 +300,19 @@ ALTER TABLE `log_aktivitas`
 -- AUTO_INCREMENT untuk tabel `peminjaman`
 --
 ALTER TABLE `peminjaman`
-  MODIFY `id_peminjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_peminjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengembalian`
 --
 ALTER TABLE `pengembalian`
-  MODIFY `id_pengembalian` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pengembalian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -278,6 +330,13 @@ ALTER TABLE `alat`
 ALTER TABLE `detail_peminjaman`
   ADD CONSTRAINT `fk_detail_alat` FOREIGN KEY (`id_alat`) REFERENCES `alat` (`id_alat`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_detail_peminjaman` FOREIGN KEY (`id_peminjaman`) REFERENCES `peminjaman` (`id_peminjaman`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `detail_pengembalian`
+--
+ALTER TABLE `detail_pengembalian`
+  ADD CONSTRAINT `fk_detail_pengembalian` FOREIGN KEY (`id_pengembalian`) REFERENCES `pengembalian` (`id_pengembalian`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_detail_pengembalian_alat` FOREIGN KEY (`id_alat`) REFERENCES `alat` (`id_alat`);
 
 --
 -- Ketidakleluasaan untuk tabel `log_aktivitas`

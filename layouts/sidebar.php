@@ -30,8 +30,7 @@
                 <div class="list-group list-group-flush">
 
                     <!-- Dashboard -->
-                    <a href="<?= BASE_URL; ?>/administrator/dashboard.php"
-                       class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/dashboard.php" class="list-group-item list-group-item-action">
 
                         <i class="bi bi-house-door"></i>
 
@@ -41,132 +40,124 @@
 
                     <?php if ($_SESSION['level'] == 'Administrator') { ?>
 
-                        <a href="<?= BASE_URL; ?>/administrator/user/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/user/index.php"
+                        class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-people"></i>
+                        <i class="bi bi-people"></i>
 
-                            Data User
+                        Data User
 
-                        </a>
+                    </a>
 
-                        <a href="<?= BASE_URL; ?>/administrator/kategori/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/kategori/index.php"
+                        class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-tags"></i>
+                        <i class="bi bi-tags"></i>
 
-                            Kategori
+                        Kategori
 
-                        </a>
+                    </a>
 
-                        <a href="<?= BASE_URL; ?>/administrator/alat/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/alat/index.php"
+                        class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-tools"></i>
+                        <i class="bi bi-tools"></i>
 
-                            Data Alat
+                        Data Alat
 
-                        </a>
+                    </a>
 
-                        <a href="<?= BASE_URL; ?>/administrator/peminjaman/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/peminjaman/index.php"
+                        class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-arrow-left-right"></i>
+                        <i class="bi bi-arrow-left-right"></i>
 
-                            Data Peminjaman
+                        Data Peminjaman
 
-                        </a>
+                    </a>
 
-                        <a href="pengembalian/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/pengembalian/index.php"
+                        class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-arrow-return-left"></i>
+                        <i class="bi bi-arrow-return-left"></i>
 
-                            Data Pengembalian
+                        Data Pengembalian
 
-                        </a>
+                    </a>
 
-                        <a href="laporan/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="laporan/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-printer"></i>
+                        <i class="bi bi-printer"></i>
 
-                            Laporan
+                        Laporan
 
-                        </a>
+                    </a>
 
-                        <a href="log/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/log_aktivitas/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-clock-history"></i>
+                        <i class="bi bi-clock-history"></i>
 
-                            Log Aktivitas
+                        Log Aktivitas
 
-                        </a>
+                    </a>
 
                     <?php } ?>
 
 
                     <?php if ($_SESSION['level'] == 'Petugas') { ?>
 
-                        <a href="../petugas/peminjaman/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="../petugas/peminjaman/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-check2-square"></i>
+                        <i class="bi bi-check2-square"></i>
 
-                            Persetujuan Peminjaman
+                        Persetujuan Peminjaman
 
-                        </a>
+                    </a>
 
-                        <a href="../petugas/pengembalian/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="../petugas/pengembalian/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-box-arrow-in-down"></i>
+                        <i class="bi bi-box-arrow-in-down"></i>
 
-                            Pengembalian
+                        Pengembalian
 
-                        </a>
+                    </a>
 
-                        <a href="../petugas/laporan/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="../petugas/laporan/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-printer"></i>
+                        <i class="bi bi-printer"></i>
 
-                            Laporan
+                        Laporan
 
-                        </a>
+                    </a>
 
                     <?php } ?>
 
 
                     <?php if ($_SESSION['level'] == 'Peminjam') { ?>
 
-                        <a href="../peminjam/alat/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="../peminjam/alat/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-tools"></i>
+                        <i class="bi bi-tools"></i>
 
-                            Daftar Alat
+                        Daftar Alat
 
-                        </a>
+                    </a>
 
-                        <a href="../peminjam/peminjaman/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="../peminjam/peminjaman/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-arrow-right-square"></i>
+                        <i class="bi bi-arrow-right-square"></i>
 
-                            Ajukan Peminjaman
+                        Ajukan Peminjaman
 
-                        </a>
+                    </a>
 
-                        <a href="../peminjam/pengembalian/index.php"
-                           class="list-group-item list-group-item-action">
+                    <a href="../peminjam/pengembalian/index.php" class="list-group-item list-group-item-action">
 
-                            <i class="bi bi-arrow-return-left"></i>
+                        <i class="bi bi-arrow-return-left"></i>
 
-                            Pengembalian
+                        Pengembalian
 
-                        </a>
+                    </a>
 
                     <?php } ?>
 
