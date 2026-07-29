@@ -7,8 +7,8 @@
 |--------------------------------------------------------------------------
 */
 
-require_once "../../config/session.php";
-require_once "../../config/database.php";
+require_once '../../config/session.php';
+require_once '../../config/database.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +16,12 @@ require_once "../../config/database.php";
 |--------------------------------------------------------------------------
 */
 
-if ($_SESSION['level'] != "Administrator") {
-    header("Location: ../../auth/login.php");
+if ($_SESSION['level'] != 'Administrator') {
+    header('Location: ../../auth/login.php');
     exit();
 }
 
-$title = "Transaksi Peminjaman";
+$title = 'Transaksi Peminjaman';
 
 /*
 |--------------------------------------------------------------------------
@@ -55,9 +55,9 @@ ORDER BY
 
 $result = $conn->query($query);
 
-require_once "../../layouts/header.php";
-require_once "../../layouts/navbar.php";
-require_once "../../layouts/sidebar.php";
+require_once '../../layouts/header.php';
+require_once '../../layouts/navbar.php';
+require_once '../../layouts/sidebar.php';
 
 ?>
 
@@ -83,9 +83,7 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-        <a
-            href="tambah.php"
-            class="btn btn-primary">
+        <a href="tambah.php" class="btn btn-primary">
 
             <i class="bi bi-plus-circle"></i>
 
@@ -97,43 +95,37 @@ require_once "../../layouts/sidebar.php";
 
     <?php if (isset($_GET['pesan'])) : ?>
 
-        <?php if ($_GET['pesan'] == "sukses") : ?>
+    <?php if ($_GET['pesan'] == "sukses") : ?>
 
-            <div class="alert alert-success alert-dismissible fade show">
+    <div class="alert alert-success alert-dismissible fade show">
 
-                Transaksi berhasil disimpan.
+        Transaksi berhasil disimpan.
 
-                <button
-                    class="btn-close"
-                    data-bs-dismiss="alert"></button>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
 
-            </div>
+    </div>
 
-        <?php elseif ($_GET['pesan'] == "update") : ?>
+    <?php elseif ($_GET['pesan'] == "update") : ?>
 
-            <div class="alert alert-warning alert-dismissible fade show">
+    <div class="alert alert-warning alert-dismissible fade show">
 
-                Transaksi berhasil diperbarui.
+        Transaksi berhasil diperbarui.
 
-                <button
-                    class="btn-close"
-                    data-bs-dismiss="alert"></button>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
 
-            </div>
+    </div>
 
-        <?php elseif ($_GET['pesan'] == "hapus") : ?>
+    <?php elseif ($_GET['pesan'] == "hapus") : ?>
 
-            <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger alert-dismissible fade show">
 
-                Transaksi berhasil dihapus.
+        Transaksi berhasil dihapus.
 
-                <button
-                    class="btn-close"
-                    data-bs-dismiss="alert"></button>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
 
-            </div>
+    </div>
 
-        <?php endif; ?>
+    <?php endif; ?>
 
     <?php endif; ?>
 
@@ -189,123 +181,225 @@ require_once "../../layouts/sidebar.php";
 
                         ?>
 
-                                <tr>
+                        <tr>
 
-                                    <td class="text-center">
+                            <td class="text-center">
 
-                                        <?= $no++; ?>
+                                <?= $no++ ?>
 
-                                    </td>
+                            </td>
 
-                                    <td class="text-center">
+                            <td class="text-center">
 
-                                        <b>#<?= $row['id_peminjaman']; ?></b>
+                                <b>#<?= $row['id_peminjaman'] ?></b>
 
-                                    </td>
+                            </td>
 
-                                    <td>
+                            <td>
 
-                                        <?= htmlspecialchars($row['nama_lengkap']); ?>
+                                <?= htmlspecialchars($row['nama_lengkap']) ?>
 
-                                    </td>
+                            </td>
 
-                                    <td class="text-center">
+                            <td class="text-center">
 
-                                        <?= date('d-m-Y', strtotime($row['tanggal_pinjam'])); ?>
+                                <?= date('d-m-Y', strtotime($row['tanggal_pinjam'])) ?>
 
-                                    </td>
+                            </td>
 
-                                    <td class="text-center">
+                            <td class="text-center">
 
-                                        <?= date('d-m-Y', strtotime($row['tanggal_kembali'])); ?>
+                                <?= date('d-m-Y', strtotime($row['tanggal_kembali'])) ?>
 
-                                    </td>
+                            </td>
 
-                                    <td class="text-center">
+                            <td class="text-center">
 
-                                        <?= $row['jumlah_item']; ?>
+                                <?= $row['jumlah_item'] ?>
 
-                                    </td>
+                            </td>
 
-                                    <td class="text-center">
+                            <td class="text-center">
 
-                                        <?= $row['total_unit']; ?>
+                                <?= $row['total_unit'] ?>
 
-                                    </td>
+                            </td>
 
-                                    <td class="text-center">
+                            <td class="text-center">
 
-                                        <?php
+                                <?php
+                                
+                                switch ($row['status']) {
+                                    case 'Menunggu':
+                                        echo '<span class="badge bg-secondary">Menunggu</span>';
+                                
+                                        break;
+                                
+                                    case 'Disetujui':
+                                        echo '<span class="badge bg-primary">Disetujui</span>';
+                                
+                                        break;
+                                
+                                    case 'Ditolak':
+                                        echo '<span class="badge bg-danger">Ditolak</span>';
+                                
+                                        break;
+                                
+                                    case 'Dipinjam':
+                                        echo '<span class="badge bg-warning text-dark">Dipinjam</span>';
+                                
+                                        break;
+                                
+                                    case 'Selesai':
+                                        echo '<span class="badge bg-success">Selesai</span>';
+                                
+                                        break;
+                                }
+                                
+                                ?>
 
-                                        switch ($row['status']) {
+                            </td>
 
-                                            case "Menunggu":
+                            <td>
 
-                                                echo '<span class="badge bg-secondary">Menunggu</span>';
+                                <div class="btn-group btn-group-sm">
 
-                                                break;
+                                    <a href="detail.php?id=<?= $row['id_peminjaman'] ?>" class="btn btn-info">
 
-                                            case "Disetujui":
+                                        <i class="bi bi-eye"></i>
+                                        Detail
 
-                                                echo '<span class="badge bg-primary">Disetujui</span>';
+                                    </a>
 
-                                                break;
+                                    <a href="edit.php?id=<?= $row['id_peminjaman'] ?>" class="btn btn-warning">
 
-                                            case "Ditolak":
+                                        <i class="bi bi-pencil"></i>
+                                        Edit
 
-                                                echo '<span class="badge bg-danger">Ditolak</span>';
+                                    </a>
 
-                                                break;
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
 
-                                            case "Dipinjam":
+                                        <i class="bi bi-arrow-repeat"></i>
+                                        Status
 
-                                                echo '<span class="badge bg-warning text-dark">Dipinjam</span>';
+                                    </button>
 
-                                                break;
+                                    <ul class="dropdown-menu">
 
-                                            case "Selesai":
+                                        <?php if($row['status']=="Menunggu"){ ?>
 
-                                                echo '<span class="badge bg-success">Selesai</span>';
+                                        <li>
 
-                                                break;
-                                        }
+                                            <a class="dropdown-item" onclick="return confirm('Setujui transaksi ini?')"
+                                                href="update_status.php?id=<?= $row['id_peminjaman'] ?>&status=Disetujui">
 
-                                        ?>
+                                                ✔ Disetujui
 
-                                    </td>
+                                            </a>
 
-                                    <td class="text-center">
+                                        </li>
 
-                                        <a
-                                            href="detail.php?id=<?= $row['id_peminjaman']; ?>"
-                                            class="btn btn-info btn-sm">
+                                        <li>
 
-                                            <i class="bi bi-eye"></i>
+                                            <a class="dropdown-item text-danger"
+                                                onclick="return confirm('Tolak transaksi ini?')"
+                                                href="update_status.php?id=<?= $row['id_peminjaman'] ?>&status=Ditolak">
 
-                                        </a>
+                                                ✖ Ditolak
 
-                                        <a
-                                            href="edit.php?id=<?= $row['id_peminjaman']; ?>"
-                                            class="btn btn-warning btn-sm">
+                                            </a>
 
-                                            <i class="bi bi-pencil-square"></i>
+                                        </li>
 
-                                        </a>
+                                        <?php } ?>
 
-                                        <a
-                                            href="hapus.php?id=<?= $row['id_peminjaman']; ?>"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Yakin ingin menghapus transaksi ini?')">
 
-                                            <i class="bi bi-trash"></i>
 
-                                        </a>
+                                        <?php if($row['status']=="Disetujui"){ ?>
 
-                                    </td>
+                                        <li>
 
-                                </tr>
+                                            <a class="dropdown-item"
+                                                onclick="return confirm('Alat telah diserahkan kepada peminjam?')"
+                                                href="update_status.php?id=<?= $row['id_peminjaman'] ?>&status=Dipinjam">
 
-                            <?php
+                                                📦 Dipinjam
+
+                                            </a>
+
+                                        </li>
+
+                                        <?php } ?>
+
+
+
+                                        <?php if($row['status']=="Dipinjam"){ ?>
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                                onclick="return confirm('Seluruh alat sudah dikembalikan?')"
+                                                href="update_status.php?id=<?= $row['id_peminjaman'] ?>&status=Selesai">
+
+                                                ↩ Selesai
+
+                                            </a>
+
+                                        </li>
+
+                                        <?php } ?>
+
+
+
+                                        <?php if($row['status']=="Ditolak"){ ?>
+
+                                        <li>
+
+                                            <span class="dropdown-item-text text-danger">
+
+                                                Transaksi Ditolak
+
+                                            </span>
+
+                                        </li>
+
+                                        <?php } ?>
+
+
+
+                                        <?php if($row['status']=="Selesai"){ ?>
+
+                                        <li>
+
+                                            <span class="dropdown-item-text text-success">
+
+                                                Transaksi Selesai
+
+                                            </span>
+
+                                        </li>
+
+                                        <?php } ?>
+
+                                    </ul>
+
+                                    <a href="hapus.php?id=<?= $row['id_peminjaman'] ?>" class="btn btn-danger"
+                                        onclick="return confirm('Yakin ingin menghapus transaksi ini?')">
+
+                                        <i class="bi bi-trash"></i>
+                                        Hapus
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        <?php
 
                             endwhile;
 
@@ -313,15 +407,15 @@ require_once "../../layouts/sidebar.php";
 
                             ?>
 
-                            <tr>
+                        <tr>
 
-                                <td colspan="9" class="text-center">
+                            <td colspan="9" class="text-center">
 
-                                    Belum ada transaksi peminjaman.
+                                Belum ada transaksi peminjaman.
 
-                                </td>
+                            </td>
 
-                            </tr>
+                        </tr>
 
                         <?php endif; ?>
 
@@ -341,6 +435,6 @@ require_once "../../layouts/sidebar.php";
 
 $conn->close();
 
-require_once "../../layouts/footer.php";
+require_once '../../layouts/footer.php';
 
 ?>
