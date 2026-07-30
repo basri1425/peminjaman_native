@@ -71,7 +71,7 @@ if ($result->num_rows == 1) {
                 break;
 
             case 'Petugas':
-                header('Location: ../petugas/dashboard.php');
+                header('Location: ../petugas/dashboard/index.php');
                 break;
 
             case 'Peminjam':

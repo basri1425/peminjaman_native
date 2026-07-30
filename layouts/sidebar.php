@@ -93,7 +93,8 @@
 
                     </a>
 
-                    <a href="<?= BASE_URL ?>/administrator/log_aktivitas/index.php" class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/administrator/log_aktivitas/index.php"
+                        class="list-group-item list-group-item-action">
 
                         <i class="bi bi-clock-history"></i>
 
@@ -106,7 +107,8 @@
 
                     <?php if ($_SESSION['level'] == 'Petugas') { ?>
 
-                    <a href="../petugas/peminjaman/index.php" class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/petugas/peminjaman/index.php"
+                        class="list-group-item list-group-item-action">
 
                         <i class="bi bi-check2-square"></i>
 
@@ -114,7 +116,8 @@
 
                     </a>
 
-                    <a href="../petugas/pengembalian/index.php" class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/petugas/pengembalian/index.php"
+                        class="list-group-item list-group-item-action">
 
                         <i class="bi bi-box-arrow-in-down"></i>
 
@@ -122,7 +125,7 @@
 
                     </a>
 
-                    <a href="../petugas/laporan/index.php" class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/petugas/laporan/index.php" class="list-group-item list-group-item-action">
 
                         <i class="bi bi-printer"></i>
 
@@ -135,7 +138,16 @@
 
                     <?php if ($_SESSION['level'] == 'Peminjam') { ?>
 
-                    <a href="../peminjam/alat/index.php" class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/peminjam/dashboard/index.php"
+                        class="list-group-item list-group-item-action">
+
+                        <i class="bi bi-speedometer2"></i>
+
+                        Dashboard
+
+                    </a>
+
+                    <a href="<?= BASE_URL ?>/peminjam/alat/index.php" class="list-group-item list-group-item-action">
 
                         <i class="bi bi-tools"></i>
 
@@ -143,19 +155,37 @@
 
                     </a>
 
-                    <a href="../peminjam/peminjaman/index.php" class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/peminjam/peminjaman/index.php"
+                        class="list-group-item list-group-item-action">
 
-                        <i class="bi bi-arrow-right-square"></i>
+                        <i class="bi bi-box-arrow-in-right"></i>
 
-                        Ajukan Peminjaman
+                        Peminjaman
 
                     </a>
 
-                    <a href="../peminjam/pengembalian/index.php" class="list-group-item list-group-item-action">
+                    <a href="<?= BASE_URL ?>/peminjam/pengembalian/index.php"
+                        class="list-group-item list-group-item-action">
 
                         <i class="bi bi-arrow-return-left"></i>
 
                         Pengembalian
+
+                    </a>
+
+                    <a href="<?= BASE_URL ?>/peminjam/riwayat/index.php" class="list-group-item list-group-item-action">
+
+                        <i class="bi bi-clock-history"></i>
+
+                        Riwayat Peminjaman
+
+                    </a>
+
+                    <a href="<?= BASE_URL ?>/peminjam/profil/index.php" class="list-group-item list-group-item-action">
+
+                        <i class="bi bi-person-circle"></i>
+
+                        Profil Saya
 
                     </a>
 
