@@ -1,5 +1,11 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Konfigurasi
+|--------------------------------------------------------------------------
+*/
+
 require '../../config/session.php';
 require '../../config/database.php';
 require '../../config/log.php';
@@ -11,8 +17,8 @@ require '../../config/log.php';
 */
 
 if (!isset($_SESSION['id_user'])) {
-    header('Location: ../../login.php');
 
+    header('Location: ../../login.php');
     exit();
 }
 
@@ -23,8 +29,8 @@ if (!isset($_SESSION['id_user'])) {
 */
 
 if ($_SESSION['level'] != 'Petugas') {
-    header('Location: ../../unauthorized.php');
 
+    header('Location: ../../unauthorized.php');
     exit();
 }
 
@@ -35,8 +41,8 @@ if ($_SESSION['level'] != 'Petugas') {
 */
 
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-    header('Location: index.php');
 
+    header('Location: index.php');
     exit();
 }
 
@@ -46,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 |--------------------------------------------------------------------------
 */
 
-$idPeminjaman = isset($_POST['id_peminjaman']) ? (int) $_POST['id_peminjaman'] : 0;
+$idPeminjaman = (int) ($_POST['id_peminjaman'] ?? 0);
 
 $tanggalPengembalian = trim($_POST['tanggal_pengembalian'] ?? '');
 
@@ -62,129 +68,126 @@ $keteranganAlat = $_POST['keterangan_alat'] ?? [];
 
 /*
 |--------------------------------------------------------------------------
-| Validasi Data
+| Validasi Input
 |--------------------------------------------------------------------------
 */
 
-if ($idPeminjaman <= 0 || empty($tanggalPengembalian) || empty($idAlat) || empty($jumlah) || empty($kondisi)) {
-    $conn->close();
+if (
+
+    $idPeminjaman <= 0 ||
+
+    empty($tanggalPengembalian) ||
+
+    empty($idAlat)
+
+) {
+
+    $_SESSION['error'] = 'Data pengembalian tidak lengkap.';
 
     header('Location: index.php');
-
     exit();
 }
 
 /*
 |--------------------------------------------------------------------------
-| Validasi Jumlah Array
-|--------------------------------------------------------------------------
-*/
-
-if (count($idAlat) != count($jumlah) || count($idAlat) != count($kondisi) || count($idAlat) != count($keteranganAlat)) {
-    $conn->close();
-
-    header('Location: detail.php?id=' . $idPeminjaman);
-
-    exit();
-}
-
-/*
-|--------------------------------------------------------------------------
-| Validasi Nilai Kondisi
-|--------------------------------------------------------------------------
-*/
-
-$kondisiValid = ['Baik', 'Rusak Ringan', 'Rusak Berat', 'Hilang'];
-
-foreach ($kondisi as $nilai) {
-    if (!in_array($nilai, $kondisiValid, true)) {
-        $conn->close();
-
-        header('Location: detail.php?id=' . $idPeminjaman);
-
-        exit();
-    }
-}
-/*
-|--------------------------------------------------------------------------
-| Mengambil Data Peminjaman
+| Validasi Status Peminjaman
 |--------------------------------------------------------------------------
 */
 
 $sql = "
 
-    SELECT
+SELECT
 
-        id_peminjaman,
-        status
+    status
 
-    FROM peminjaman
+FROM peminjaman
 
-    WHERE
+WHERE
 
-        id_peminjaman = ?
+    id_peminjaman = ?
 
-    LIMIT 1
+LIMIT 1
 
 ";
 
 $stmt = $conn->prepare($sql);
 
-if (!$stmt) {
-    $conn->close();
-
-    header('Location: index.php');
-
-    exit();
-}
-
-$stmt->bind_param(
-    'i',
-
-    $idPeminjaman,
-);
+$stmt->bind_param("i", $idPeminjaman);
 
 $stmt->execute();
 
 $result = $stmt->get_result();
 
-/*
-|--------------------------------------------------------------------------
-| Validasi Data Peminjaman
-|--------------------------------------------------------------------------
-*/
-
 if ($result->num_rows == 0) {
-    $result->free();
 
     $stmt->close();
 
-    $conn->close();
+    $_SESSION['error'] = 'Data peminjaman tidak ditemukan.';
 
     header('Location: index.php');
-
     exit();
 }
 
 $data = $result->fetch_assoc();
 
+$stmt->close();
+
+$result->free();
+
+if ($data['status'] != 'Dipinjam') {
+
+    $_SESSION['error'] = 'Status peminjaman tidak dapat diproses.';
+
+    header('Location: detail.php?id=' . $idPeminjaman);
+    exit();
+}
+
 /*
 |--------------------------------------------------------------------------
-| Validasi Status
+| Validasi Pengembalian
 |--------------------------------------------------------------------------
 */
 
-if ($data['status'] != 'Dipinjam') {
-    $result->free();
+$sql = "
+
+SELECT
+
+    id_pengembalian
+
+FROM pengembalian
+
+WHERE
+
+    id_peminjaman = ?
+
+LIMIT 1
+
+";
+
+$stmt = $conn->prepare($sql);
+
+$stmt->bind_param("i", $idPeminjaman);
+
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
 
     $stmt->close();
 
-    $conn->close();
+    $result->free();
+
+    $_SESSION['error'] =
+        'Pengembalian untuk transaksi ini sudah pernah diproses.';
 
     header('Location: detail.php?id=' . $idPeminjaman);
-
     exit();
 }
+
+$stmt->close();
+
+$result->free();
 
 /*
 |--------------------------------------------------------------------------
@@ -197,16 +200,39 @@ $conn->begin_transaction();
 try {
     /*
     |--------------------------------------------------------------------------
-    | Menyimpan Data Pengembalian
+    | Menentukan Kondisi Pengembalian
     |--------------------------------------------------------------------------
     */
 
-    $sqlPengembalian = "
+    $kondisiKembali = 'Baik';
+
+    foreach ($kondisi as $item) {
+
+        if ($item == 'Rusak Berat') {
+
+            $kondisiKembali = 'Rusak Berat';
+            break;
+        }
+
+        if ($item == 'Rusak Ringan') {
+
+            $kondisiKembali = 'Rusak Ringan';
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Simpan Data Pengembalian
+    |--------------------------------------------------------------------------
+    */
+
+    $sql = "
 
         INSERT INTO pengembalian
         (
             id_peminjaman,
             tanggal_pengembalian,
+            kondisi_kembali,
             keterangan,
             created_at,
             updated_at
@@ -216,158 +242,208 @@ try {
             ?,
             ?,
             ?,
+            ?,
             NOW(),
             NOW()
         )
 
     ";
 
-    $stmtPengembalian = $conn->prepare($sqlPengembalian);
+    $stmt = $conn->prepare($sql);
 
-    if (!$stmtPengembalian) {
-        throw new Exception('Gagal mempersiapkan query pengembalian.');
+    if (!$stmt) {
+
+        throw new Exception($conn->error);
     }
 
-    $stmtPengembalian->bind_param(
-        'iss',
+    $stmt->bind_param(
+
+        "isss",
 
         $idPeminjaman,
-
         $tanggalPengembalian,
+        $kondisiKembali,
+        $keterangan
 
-        $keterangan,
     );
 
-    if (!$stmtPengembalian->execute()) {
-        throw new Exception('Gagal menyimpan data pengembalian.');
+    if (!$stmt->execute()) {
+
+        throw new Exception($stmt->error);
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Mengambil ID Pengembalian
+    | ID Pengembalian
     |--------------------------------------------------------------------------
     */
 
     $idPengembalian = $conn->insert_id;
-    /*
-    |--------------------------------------------------------------------------
-    | Menyiapkan Query Detail Pengembalian
-    |--------------------------------------------------------------------------
-    */
 
-    $sqlDetail = "
-
-        INSERT INTO detail_pengembalian
-        (
-            id_pengembalian,
-            id_alat,
-            jumlah,
-            kondisi,
-            keterangan
-        )
-        VALUES
-        (
-            ?,
-            ?,
-            ?,
-            ?,
-            ?
-        )
-
-    ";
-
-    $stmtDetail = $conn->prepare($sqlDetail);
-
-    if (!$stmtDetail) {
-        throw new Exception('Gagal mempersiapkan query detail pengembalian.');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Menyiapkan Query Update Stok
-    |--------------------------------------------------------------------------
-    */
-
-    $sqlStok = "
-
-        UPDATE alat
-
-        SET
-
-            stok = stok + ?
-
-        WHERE
-
-            id_alat = ?
-
-    ";
-
-    $stmtStok = $conn->prepare($sqlStok);
-
-    if (!$stmtStok) {
-        throw new Exception('Gagal mempersiapkan query update stok.');
-    }
-
+    $stmt->close();
     /*
     |--------------------------------------------------------------------------
     | Menyimpan Detail Pengembalian
     |--------------------------------------------------------------------------
     */
 
-    foreach ($idAlat as $index => $idAlatItem) {
+    foreach ($idAlat as $i => $idAlatItem) {
+
         $idAlatItem = (int) $idAlatItem;
 
-        $jumlahItem = (int) $jumlah[$index];
+        $jumlahItem = (int) $jumlah[$i];
 
-        $kondisiItem = trim($kondisi[$index]);
+        $kondisiItem = trim($kondisi[$i]);
 
-        $keteranganItem = trim($keteranganAlat[$index]);
+        $keteranganItem = trim($keteranganAlat[$i]);
 
         /*
         |--------------------------------------------------------------------------
-        | Simpan Detail Pengembalian
+        | INSERT Detail Pengembalian
         |--------------------------------------------------------------------------
         */
 
-        $stmtDetail->bind_param(
-            'iiiss',
+        $sql = "
+
+            INSERT INTO detail_pengembalian
+            (
+                id_pengembalian,
+                id_alat,
+                jumlah,
+                kondisi,
+                keterangan
+            )
+            VALUES
+            (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
+            )
+
+        ";
+
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+
+            throw new Exception($conn->error);
+        }
+
+        $stmt->bind_param(
+
+            "iiiss",
 
             $idPengembalian,
-
             $idAlatItem,
-
             $jumlahItem,
-
             $kondisiItem,
+            $keteranganItem
 
-            $keteranganItem,
         );
 
-        if (!$stmtDetail->execute()) {
-            throw new Exception('Gagal menyimpan detail pengembalian.');
+        if (!$stmt->execute()) {
+
+            throw new Exception($stmt->error);
         }
+
+        $stmt->close();
 
         /*
         |--------------------------------------------------------------------------
-        | Tambah Stok
+        | Update Stok
         |--------------------------------------------------------------------------
+        |
+        | Jika alat hilang maka stok tidak bertambah.
+        |
         */
 
         if ($kondisiItem != 'Hilang') {
-            $stmtStok->bind_param(
-                'ii',
+
+            $sql = "
+
+                UPDATE alat
+
+                SET
+
+                    stok = stok + ?,
+                    updated_at = NOW()
+
+                WHERE
+
+                    id_alat = ?
+
+            ";
+
+            $stmt = $conn->prepare($sql);
+
+            if (!$stmt) {
+
+                throw new Exception($conn->error);
+            }
+
+            $stmt->bind_param(
+
+                "ii",
 
                 $jumlahItem,
+                $idAlatItem
 
-                $idAlatItem,
             );
 
-            if (!$stmtStok->execute()) {
-                throw new Exception('Gagal menambah stok alat.');
-            }
-        }
-    }
+            if (!$stmt->execute()) {
 
+                throw new Exception($stmt->error);
+            }
+
+            $stmt->close();
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Kondisi Alat
+        |--------------------------------------------------------------------------
+        */
+
+        $sql = "
+
+            UPDATE alat
+
+            SET
+
+                kondisi = ?,
+                updated_at = NOW()
+
+            WHERE
+
+                id_alat = ?
+
+        ";
+
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+
+            throw new Exception($conn->error);
+        }
+
+        $stmt->bind_param(
+
+            "si",
+
+            $kondisiItem,
+            $idAlatItem
+
+        );
+
+        if (!$stmt->execute()) {
+
+            throw new Exception($stmt->error);
+        }
+
+        $stmt->close();
+    }
     /*
     |--------------------------------------------------------------------------
     | Update Status Peminjaman
@@ -376,7 +452,7 @@ try {
 
     $status = 'Selesai';
 
-    $sqlUpdate = "
+    $sql = "
 
         UPDATE peminjaman
 
@@ -391,23 +467,28 @@ try {
 
     ";
 
-    $stmtUpdate = $conn->prepare($sqlUpdate);
+    $stmt = $conn->prepare($sql);
 
-    if (!$stmtUpdate) {
-        throw new Exception('Gagal mempersiapkan query update status.');
+    if (!$stmt) {
+
+        throw new Exception($conn->error);
     }
 
-    $stmtUpdate->bind_param(
-        'si',
+    $stmt->bind_param(
+
+        "si",
 
         $status,
+        $idPeminjaman
 
-        $idPeminjaman,
     );
 
-    if (!$stmtUpdate->execute()) {
-        throw new Exception('Gagal mengubah status peminjaman.');
+    if (!$stmt->execute()) {
+
+        throw new Exception($stmt->error);
     }
+
+    $stmt->close();
 
     /*
     |--------------------------------------------------------------------------
@@ -415,131 +496,55 @@ try {
     |--------------------------------------------------------------------------
     */
 
-    if (
-        !tambahLog(
-            $conn,
+    $aktivitas = "Memproses pengembalian alat. ID Peminjaman : {$idPeminjaman}";
 
-            "Memproses pengembalian alat untuk peminjaman ID #{$idPeminjaman}",
-        )
-    ) {
+    if (!tambahLog($conn, $aktivitas)) {
+
         throw new Exception('Gagal menyimpan log aktivitas.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Commit Transaction
+    | Commit
     |--------------------------------------------------------------------------
     */
 
     $conn->commit();
 
-    /*
-    |--------------------------------------------------------------------------
-    | Tutup Statement
-    |--------------------------------------------------------------------------
-    */
-
-    $stmtPengembalian->close();
-
-    $stmtDetail->close();
-
-    $stmtStok->close();
-
-    $stmtUpdate->close();
-
-    /*
-    |--------------------------------------------------------------------------
-    | Redirect Berhasil
-    |--------------------------------------------------------------------------
-    */
-
-    header('Location: index.php?pesan=berhasil');
-
-    exit();
+    $_SESSION['success'] = 'Pengembalian alat berhasil diproses.';
 } catch (Exception $e) {
+
     /*
     |--------------------------------------------------------------------------
-    | Rollback Transaction
+    | Rollback
     |--------------------------------------------------------------------------
     */
 
     $conn->rollback();
 
-    /*
-    |--------------------------------------------------------------------------
-    | Tutup Statement
-    |--------------------------------------------------------------------------
-    */
-
-    if (isset($stmtPengembalian)) {
-        $stmtPengembalian->close();
-    }
-
-    if (isset($stmtDetail)) {
-        $stmtDetail->close();
-    }
-
-    if (isset($stmtStok)) {
-        $stmtStok->close();
-    }
-
-    if (isset($stmtUpdate)) {
-        $stmtUpdate->close();
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Redirect Gagal
-    |--------------------------------------------------------------------------
-    */
-
-    header('Location: detail.php?id=' . $idPeminjaman . '&pesan=gagal');
-
-    exit();
+    $_SESSION['error'] = $e->getMessage();
 }
 
 /*
 |--------------------------------------------------------------------------
-| Membebaskan Result
-|--------------------------------------------------------------------------
-*/
-
-if (isset($result) && $result instanceof mysqli_result) {
-    $result->free();
-}
-
-/*
-|--------------------------------------------------------------------------
-| Menutup Statement
-|--------------------------------------------------------------------------
-*/
-
-if (isset($stmt)) {
-    $stmt->close();
-}
-
-if (isset($stmtPengembalian)) {
-    $stmtPengembalian->close();
-}
-
-if (isset($stmtDetail)) {
-    $stmtDetail->close();
-}
-
-if (isset($stmtStok)) {
-    $stmtStok->close();
-}
-
-if (isset($stmtUpdate)) {
-    $stmtUpdate->close();
-}
-
-/*
-|--------------------------------------------------------------------------
-| Menutup Koneksi Database
+| Menutup Koneksi
 |--------------------------------------------------------------------------
 */
 
 $conn->close();
 
-?>
+/*
+|--------------------------------------------------------------------------
+| Redirect
+|--------------------------------------------------------------------------
+*/
+
+if (isset($_SESSION['success'])) {
+
+    header('Location: index.php');
+} else {
+
+    header('Location: detail.php?id=' . $idPeminjaman);
+}
+
+exit;
