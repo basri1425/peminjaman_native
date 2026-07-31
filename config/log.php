@@ -73,17 +73,12 @@ function tambahLog(mysqli $conn, string $aktivitas): bool
 
     $stmt->bind_param(
         'iss',
-
         $idUser,
-
         $aktivitas,
-
         $ipAddress,
     );
 
     $berhasil = $stmt->execute();
-
     $stmt->close();
-
     return $berhasil;
 }

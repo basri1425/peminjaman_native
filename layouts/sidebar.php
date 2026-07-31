@@ -29,16 +29,17 @@
 
                 <div class="list-group list-group-flush">
 
-                    <!-- Dashboard -->
-                    <a href="<?= BASE_URL ?>/administrator/dashboard.php" class="list-group-item list-group-item-action">
 
-                        <i class="bi bi-house-door"></i>
-
-                        Dashboard
-
-                    </a>
 
                     <?php if ($_SESSION['level'] == 'Administrator') { ?>
+                        <!-- Dashboard -->
+                        <a href="<?= BASE_URL ?>/administrator/dashboard.php" class="list-group-item list-group-item-action">
+
+                            <i class="bi bi-house-door"></i>
+
+                            Dashboard
+
+                        </a>
 
                         <a href="<?= BASE_URL ?>/administrator/user/index.php"
                             class="list-group-item list-group-item-action">
@@ -105,6 +106,14 @@
                     <?php } ?>
 
                     <?php if ($_SESSION['level'] == 'Petugas') { ?>
+                        <a href="<?= BASE_URL ?>/petugas/dashboard/index.php"
+                            class="list-group-item list-group-item-action">
+
+                            <i class="bi bi-speedometer2"></i>
+
+                            Dashboard
+
+                        </a>
 
                         <!-- Persetujuan Peminjaman -->
                         <a href="<?= BASE_URL ?>/petugas/peminjaman/index.php"
@@ -121,24 +130,7 @@
                             class="list-group-item list-group-item-action">
 
                             <i class="bi bi-clipboard-check"></i>
-
                             Verifikasi Pengembalian
-
-                            <?php
-                            // Opsional: tampilkan badge jumlah pengajuan yang menunggu verifikasi
-                            /*
-        $sql = "SELECT COUNT(*) AS total
-                FROM peminjaman
-                WHERE status='Menunggu Pengembalian'";
-        $result = $conn->query($sql);
-        $badge = $result->fetch_assoc()['total'];
-
-        if ($badge > 0) {
-            echo '<span class="badge bg-danger float-end">' . $badge . '</span>';
-        }
-        */
-                            ?>
-
                         </a>
 
                         <!-- Riwayat Pengembalian -->

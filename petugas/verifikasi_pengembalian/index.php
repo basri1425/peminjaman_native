@@ -22,30 +22,23 @@ if ($_SESSION['level'] != 'Petugas') {
 $sql = "
 
 SELECT
-
     p.id_peminjaman,
     p.tanggal_pinjam,
     p.tanggal_kembali,
     p.updated_at,
 
-    u.nama,
+    u.nama_lengkap,
 
     COUNT(dp.id_detail) AS jumlah_item
-
 FROM peminjaman p
 
 INNER JOIN users u
 ON p.id_user=u.id_user
-
 INNER JOIN detail_peminjaman dp
 ON dp.id_peminjaman=p.id_peminjaman
-
-WHERE p.status='Menunggu Pengembalian'
-
+WHERE p.status='Dipinjam'
 GROUP BY p.id_peminjaman
-
 ORDER BY p.updated_at ASC
-
 ";
 
 $result = $conn->query($sql);
@@ -68,7 +61,7 @@ FROM peminjaman
 
 WHERE
 
-status='Menunggu Pengembalian'
+status='Dipinjam'
 
 AND DATE(updated_at)=?
 
@@ -87,9 +80,9 @@ $stmt->close();
 $totalHariIni = $dataHariIni['total'];
 ?>
 
-<?php include '../../template/header.php'; ?>
-<?php include '../../template/navbar.php'; ?>
-<?php include '../../template/sidebar.php'; ?>
+<?php include '../../layouts/header.php'; ?>
+<?php include '../../layouts/navbar.php'; ?>
+<?php include '../../layouts/sidebar.php'; ?>
 
 <div class="content-wrapper">
 
@@ -108,7 +101,7 @@ $totalHariIni = $dataHariIni['total'];
                     </h1>
 
                     <p class="text-muted">
-                        Daftar pengajuan pengembalian yang menunggu verifikasi petugas.
+                        Daftar pengajuan pengembalian yang Dipinjam verifikasi petugas.
                     </p>
 
                 </div>
@@ -257,7 +250,7 @@ $totalHariIni = $dataHariIni['total'];
 
                                     </td>
 
-                                    <td><?= htmlspecialchars($row['nama']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
 
                                     <td><?= date('d-m-Y', strtotime($row['tanggal_pinjam'])) ?></td>
 
@@ -273,7 +266,7 @@ $totalHariIni = $dataHariIni['total'];
 
                                         <span class="badge bg-warning">
 
-                                            Menunggu Pengembalian
+                                            Dipinjam Pengembalian
 
                                         </span>
 
@@ -329,7 +322,7 @@ $totalHariIni = $dataHariIni['total'];
 
 </div>
 
-<?php include '../../template/footer.php'; ?>
+<?php include '../../layouts/footer.php'; ?>
 
 
 <script>

@@ -36,11 +36,8 @@ $sql = "SELECT * FROM users
         LIMIT 1";
 
 $stmt = $conn->prepare($sql);
-
 $stmt->bind_param('s', $username);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
 
 // Username ditemukan
