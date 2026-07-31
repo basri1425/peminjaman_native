@@ -16,7 +16,6 @@ CREATE TABLE users (
     status ENUM('Aktif','Tidak Aktif') DEFAULT 'Aktif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
 ) ENGINE=InnoDB;
 
 ===============================
@@ -89,6 +88,7 @@ CREATE TABLE pengembalian (
     kondisi_kembali ENUM('Baik','Rusak Ringan','Rusak Berat') DEFAULT 'Baik',
     keterangan TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_pengembalian_peminjaman
     FOREIGN KEY(id_peminjaman)
