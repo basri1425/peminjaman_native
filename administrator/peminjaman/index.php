@@ -436,5 +436,6 @@ require_once '../../layouts/sidebar.php';
 $conn->close();
 
 require_once '../../layouts/footer.php';
+require_once '../../layouts/script.php';
 
 ?>

@@ -798,6 +798,7 @@ $statusPeminjaman = $transaksi['status'];
 </script>
 
 <?php include '../../layouts/footer.php'; ?>
+<?php include '../../layouts/script.php'; ?>
 <?php
 
 /*
