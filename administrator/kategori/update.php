@@ -66,19 +66,14 @@ $stmt = $conn->prepare("
 ");
 
 $stmt->bind_param('si', $nama_kategori, $id_kategori);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     echo "
     <script>
-
         alert('Nama kategori sudah digunakan.');
-
         window.location='edit.php?id=$id_kategori';
-
     </script>
     ";
 
@@ -113,17 +108,13 @@ if ($stmt->execute()) {
 } else {
     echo "
     <script>
-
         alert('Data kategori gagal diperbarui.');
-
         window.location='edit.php?id=$id_kategori';
-
     </script>
     ";
 }
 
 $stmt->close();
-
 $conn->close();
 
 ?>

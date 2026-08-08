@@ -43,11 +43,8 @@ $id_user = (int) $_GET['id'];
 if ($id_user == $_SESSION['id_user']) {
     echo "
     <script>
-
         alert('Akun yang sedang digunakan tidak dapat dihapus.');
-
         window.location='index.php';
-
     </script>
     ";
 
@@ -103,17 +100,12 @@ if ($stmt->execute()) {
 } else {
     echo "
     <script>
-
         alert('Data gagal dihapus.');
-
         window.location='index.php';
-
     </script>
     ";
 }
 
 $stmt->close();
-
 $conn->close();
-
 ?>

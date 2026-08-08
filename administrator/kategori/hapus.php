@@ -47,9 +47,7 @@ $stmt = $conn->prepare("
 ");
 
 $stmt->bind_param('i', $id_kategori);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
 
 if ($result->num_rows == 0) {
@@ -72,23 +70,16 @@ $stmt = $conn->prepare("
 ");
 
 $stmt->bind_param('i', $id_kategori);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
-
 $data = $result->fetch_assoc();
-
 $stmt->close();
 
 if ($data['jumlah'] > 0) {
     echo "
     <script>
-
         alert('Kategori tidak dapat dihapus karena masih digunakan oleh data alat.');
-
         window.location='index.php';
-
     </script>
     ";
 
@@ -119,17 +110,13 @@ if ($stmt->execute()) {
 } else {
     echo "
     <script>
-
         alert('Data kategori gagal dihapus.');
-
         window.location='index.php';
-
     </script>
     ";
 }
 
 $stmt->close();
-
 $conn->close();
 
 ?>

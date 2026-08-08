@@ -81,13 +81,9 @@ WHERE id_alat = ?
 ");
 
 $stmt->bind_param("i", $id_alat);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
-
 if ($result->num_rows == 0) {
-
     header("Location: index.php");
     exit();
 }
@@ -107,18 +103,13 @@ WHERE id_kategori = ?
 ");
 
 $stmt->bind_param("i", $id_kategori);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
-
 if ($result->num_rows == 0) {
-
     echo "<script>
             alert('Kategori tidak ditemukan.');
             window.location='edit.php?id=$id_alat';
           </script>";
-
     exit();
 }
 

@@ -68,172 +68,92 @@ require_once '../../layouts/sidebar.php';
 ?>
 
 <div class="container-fluid">
-
     <div class="d-flex justify-content-between align-items-center mb-4">
-
         <div>
-
             <h3>
-
                 <i class="bi bi-person-vcard-fill"></i>
-
                 Detail User
-
             </h3>
-
             <p class="text-muted mb-0">
-
                 Informasi lengkap data pengguna.
-
             </p>
-
         </div>
-
         <a href="index.php" class="btn btn-secondary">
-
             <i class="bi bi-arrow-left"></i>
-
             Kembali
-
         </a>
-
     </div>
-
     <div class="card shadow-sm">
-
         <div class="card-header bg-primary text-white">
-
             Informasi User
-
         </div>
-
         <div class="card-body">
-
             <table class="table table-bordered">
-
                 <tr>
-
                     <th width="250">ID User</th>
-
                     <td><?= htmlspecialchars($user['id_user']) ?></td>
-
                 </tr>
-
                 <tr>
-
                     <th>Nama Lengkap</th>
-
                     <td><?= htmlspecialchars($user['nama_lengkap']) ?></td>
-
                 </tr>
-
                 <tr>
-
                     <th>Username</th>
-
                     <td><?= htmlspecialchars($user['username']) ?></td>
-
                 </tr>
-
                 <tr>
-
                     <th>Level</th>
-
                     <td>
-
-                        <?php
-                        
+                        <?php                     
                         switch ($user['level']) {
                             case 'Administrator':
                                 echo '<span class="badge bg-danger">Administrator</span>';
-                                break;
-                        
+                                break;                        
                             case 'Petugas':
                                 echo '<span class="badge bg-primary">Petugas</span>';
-                                break;
-                        
+                                break;                        
                             default:
                                 echo '<span class="badge bg-success">Peminjam</span>';
-                        }
-                        
+                        }                       
                         ?>
-
                     </td>
-
                 </tr>
-
                 <tr>
-
                     <th>Status</th>
-
                     <td>
-
                         <?php if ($user['status'] == "Aktif") { ?>
-
                         <span class="badge bg-success">
-
                             Aktif
-
                         </span>
-
                         <?php } else { ?>
-
                         <span class="badge bg-secondary">
-
                             Tidak Aktif
-
                         </span>
-
                         <?php } ?>
-
                     </td>
-
                 </tr>
-
                 <tr>
-
                     <th>Dibuat Pada</th>
-
                     <td><?= htmlspecialchars($user['created_at']) ?></td>
-
                 </tr>
-
                 <tr>
-
                     <th>Terakhir Diubah</th>
-
                     <td><?= htmlspecialchars($user['updated_at']) ?></td>
-
                 </tr>
-
             </table>
-
         </div>
-
         <div class="card-footer">
-
             <a href="edit.php?id=<?= $user['id_user'] ?>" class="btn btn-warning">
-
                 <i class="bi bi-pencil-square"></i>
-
                 Edit
-
             </a>
-
             <a href="index.php" class="btn btn-secondary">
-
                 <i class="bi bi-arrow-left"></i>
-
                 Kembali
-
             </a>
-
         </div>
-
     </div>
-
 </div>
-
 <?php
 
 $stmt->close();

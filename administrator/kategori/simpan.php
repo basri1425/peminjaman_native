@@ -64,19 +64,14 @@ $stmt = $conn->prepare("
 ");
 
 $stmt->bind_param('s', $nama_kategori);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     echo "
     <script>
-
         alert('Nama kategori sudah tersedia.');
-
         window.location='create.php';
-
     </script>
     ";
 
@@ -115,17 +110,11 @@ if ($stmt->execute()) {
 } else {
     echo "
     <script>
-
         alert('Data kategori gagal disimpan.');
-
         window.location='create.php';
-
     </script>
     ";
 }
-
 $stmt->close();
-
 $conn->close();
-
 ?>

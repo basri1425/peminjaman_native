@@ -73,9 +73,7 @@ WHERE id_kategori=?
 ");
 
 $stmt->bind_param('i', $id_kategori);
-
 $stmt->execute();
-
 $result = $stmt->get_result();
 
 if ($result->num_rows == 0) {
