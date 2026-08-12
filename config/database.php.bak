@@ -12,7 +12,7 @@
 $host = 'localhost';
 $username = 'root';
 $password = '';
-$database = 'peminjaman';
+$database = 'db_peminjaman';
 
 $conn = new mysqli($host, $username, $password, $database);
 
